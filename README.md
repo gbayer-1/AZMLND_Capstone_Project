@@ -1,6 +1,6 @@
 *NOTE:* This file is a template that you can use to create the README for your project. The *TODO* comments below will highlight the information you should be sure to include.
 
-# Your Project Title Here
+# Machine Learning Engineer with Microsoft Azure: Capstone Project: Predicting Heart Failure
 
 *TODO:* Write a short introduction to your project.
 
@@ -11,12 +11,44 @@
 
 ### Overview
 *TODO*: Explain about the data you are using and where you got it from.
+The dataset I'm using for this project is the Heart Failure Prediction Dataset from kaggle.
+
+fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [2021-10-18] from https://www.kaggle.com/fedesoriano/heart-failure-prediction.
+
+
 
 ### Task
 *TODO*: Explain the task you are going to be solving with this dataset and the features you will be using for it.
+The task with this dataset is to predict whether a person will develop a heart disease with a set of 11 diagnostic features.
+This dataset is a combination of five independent heart disease datasets containing 918 observations of patients. The target column "Heart Disease" is nearly balanced in this dataset with 510 patients with and 408 patients without cardiovascular diseases.
+
+The features in this dataset are:
+- General information
+  - Age of the patient in years; with the youngest patient being 28 and the oldest 77 years old
+  - Sex of the patient; the majority of the patients (79%) being male
+- blood tests
+  - Cholesterol in serum [mm/dl]; an indicator for ateriosclerosis
+  - fasting blood sugar level; a boolean value if the blood sugar is elevated (>120mg/dl) or not, which is an indicator for diabetes
+- medical history
+  - type of chest pain the patient is experiencing in four categories
+    - TA: typical angina
+    - ATA: atypical angina
+    - NAP: non-anginal pain
+    - ASY: asymptomatic
+- ECG and cardiac stress testing
+  - resting blood pressure [mm Hg]
+  - resting ECG results in three categories
+    - Normal
+    - ST  ST-T wave abnormality
+    - LVH : left ventricular hypertrophy
+  - oldpeak: the depression between S and T peak
+  - maximum heartrate under cardiac stress
+  - ST-slope of te peak exercise in three categories (Up, flat and down)
 
 ### Access
 *TODO*: Explain how you are accessing the data in your workspace.
+
+### PreProcessing
 
 ## Automated ML
 *TODO*: Give an overview of the `automl` settings and configuration you used for this experiment
