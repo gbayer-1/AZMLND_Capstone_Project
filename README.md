@@ -46,9 +46,9 @@ The features in this dataset are:
 ### PreProcessing
 The preprocessing of the data is defined in the prepare_data function in the train.py script.
 Some categorical features have to be preprocessed before they can be handled by the machine learning models.
-The columns Sex and ExerciseAngina are binary coded, with 1 for "male"/"yes" and 0 for "female"/"no" respectively.
-The column ST_Slope is numerically encoded with 1 for "Up", 0 for "Flat" and -1 for "Down".
-the columns for the ChestPainType and RestingECG features are one_hot encoded for the model.
+- The columns Sex and ExerciseAngina are binary coded, with 1 for "male"/"yes" and 0 for "female"/"no" respectively.
+- The column ST_Slope is numerically encoded with 1 for "Up", 0 for "Flat" and -1 for "Down".
+- The columns for the ChestPainType and RestingECG features are one_hot encoded for the model.
 
 ## Automated ML
 *TODO*: Give an overview of the `automl` settings and configuration you used for this experiment
