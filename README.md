@@ -19,6 +19,7 @@ fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [2021
 
 ### Task
 *TODO*: Explain the task you are going to be solving with this dataset and the features you will be using for it.
+
 The task with this dataset is to predict whether a person will develop a heart disease with a set of 11 diagnostic features.
 This dataset is a combination of five independent heart disease datasets containing 918 observations of patients. The target column "Heart Disease" is nearly balanced in this dataset with 510 patients with and 408 patients without cardiovascular diseases.
 
@@ -30,25 +31,24 @@ The features in this dataset are:
   - Cholesterol in serum [mm/dl]; an indicator for ateriosclerosis
   - fasting blood sugar level; a boolean value if the blood sugar is elevated (>120mg/dl) or not, which is an indicator for diabetes
 - medical history
-  - type of chest pain the patient is experiencing in four categories
-    - TA: typical angina
-    - ATA: atypical angina
-    - NAP: non-anginal pain
-    - ASY: asymptomatic
+  - type of chest pain the patient is experiencing in four categories (TA: typical angina, ATA: atypical angina, NAP: non-anginal pain, ASY: asymptomatic)
 - ECG and cardiac stress testing
   - resting blood pressure [mm Hg]
-  - resting ECG results in three categories
-    - Normal
-    - ST  ST-T wave abnormality
-    - LVH : left ventricular hypertrophy
+  - resting ECG results in three categories (Normal,  ST: ST-T wave abnormality, LVH : left ventricular hypertrophy)
   - oldpeak: the depression between S and T peak
   - maximum heartrate under cardiac stress
+  - exercise-induced angina
   - ST-slope of te peak exercise in three categories (Up, flat and down)
 
 ### Access
 *TODO*: Explain how you are accessing the data in your workspace.
 
 ### PreProcessing
+The preprocessing of the data is defined in the prepare_data function in the train.py script.
+Some categorical features have to be preprocessed before they can be handled by the machine learning models.
+The columns Sex and ExerciseAngina are binary coded, with 1 for "male"/"yes" and 0 for "female"/"no" respectively.
+The column ST_Slope is numerically encoded with 1 for "Up", 0 for "Flat" and -1 for "Down".
+the columns for the ChestPainType and RestingECG features are one_hot encoded for the model.
 
 ## Automated ML
 *TODO*: Give an overview of the `automl` settings and configuration you used for this experiment
