@@ -15,8 +15,6 @@ The dataset I'm using for this project is the Heart Failure Prediction Dataset f
 
 fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [2021-10-18] from https://www.kaggle.com/fedesoriano/heart-failure-prediction.
 
-
-
 ### Task
 *TODO*: Explain the task you are going to be solving with this dataset and the features you will be using for it.
 
@@ -42,6 +40,7 @@ The features in this dataset are:
 
 ### Access
 *TODO*: Explain how you are accessing the data in your workspace.
+Since I'm using the same dataset for an AutoML run and a HyperDrive Experiment, I defined the access to the data in the train.py script, so it can be used in both notebooks.
 
 ### PreProcessing
 The preprocessing of the data is defined in the prepare_data function in the train.py script.
