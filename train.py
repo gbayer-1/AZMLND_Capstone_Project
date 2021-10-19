@@ -24,8 +24,6 @@ def prepare_data(df):
     The columns for the ChestPainType and RestingECG features are one_hot encoded for the model.
 
     '''
-    
-    df = df.dropna()
     df['Sex'] = df.Sex.apply(lambda s: 1 if s=='M' else 0)
     df['ExerciseAngina'] = df.ExerciseAngina.apply(lambda s: 1 if s=='Y' else 0)
     
@@ -64,6 +62,7 @@ def read_data():
    
     # Test, whether the dataset is already in the workspace
     if data_name in ws.datasets.keys():
+        print('found existing dataset. use it')
         dataset = ws.datasets[data_name]
     else:
         # Create the dataset
@@ -78,9 +77,9 @@ def read_data():
                                                             support_multi_line=False,
                                                             empty_as_string=False,
                                                             encoding="utf8")
-        dataset = dataset.register(workspace = ws,
-                                   name = data_name,
-                                   description = description_text)
+        df = prepare_data(dataset.to_pandas_dataframe())
+        dataset = Dataset.Tabular.register_pandas_dataframe(df,datastore, show_progress=True,
+                             name=data_name, description=description_text)
     return dataset
 
 ##ds = read_data()
