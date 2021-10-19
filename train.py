@@ -9,11 +9,11 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from azureml.core.run import Run
+from azureml.core import Dataset
 import argparse
 import numpy as np
 from azureml.core import Workspace
-from azureml.data.dataset_factory import TabularDatasetFactory
-import os
+#import os
 
 def prepare_data(df):
     '''
@@ -39,6 +39,11 @@ def prepare_data(df):
     df["ST_Slope"] = df.ST_Slope.map(ST_Slope)
     return df
 
+def test_func():
+    ws = Workspace.from_config()
+    default_datastore = ws.get_default_datastore()
+    default_datastore.upload('./data')
+
 # TODO change data read in
 def read_data():
     '''
@@ -56,25 +61,17 @@ def read_data():
     data_name = "heart_disease_data"
     description_text = "heart_failure_prediction_dataset from kaggle"
     
-    # Get the current working directory (CWD) to create the correct absolute
-    # path to the data csv
-    cwd = os.getcwd() 
-    path_to_data = cwd + "\\data\\heart.csv"
-    
+   
     # Test, whether the dataset is already in the workspace
     if data_name in ws.datasets.keys():
         dataset = ws.datasets[data_name]
     else:
         # Create the dataset
-        default_datastore = ws.get_default_datastore()
-        default_datastore.upload_files(files = [path_to_data],
-                                       target_path = 'UI/data/',
-                                       overwrite = True,
-                                       show_progress = True)
-        path_in_datastore = default_datastore.path('UI/data/')
-    
-        dataset = TabularDatasetFactory.from_delimited_files(path_in_datastore,
-                                                            validate=True,
+        datastore = ws.get_default_datastore()
+        datastore.upload('./data', overwrite=True, target_path='data')
+   
+        dataset = Dataset.Tabular.from_delimited_files(path = [(datastore, 'data/heart.csv')],
+                                                        validate=True,
                                                             infer_column_types=True,
                                                             separator=',',
                                                             header=True,
@@ -86,14 +83,14 @@ def read_data():
                                    description = description_text)
         return dataset
 
-ds = read_data()
-df = ds.to_pandas_dataframe()
-X = prepare_data(df)
-y = X.pop("HeartDisease")
+##ds = read_data()
+#df = ds.to_pandas_dataframe()
+#X = prepare_data(df)
+#y = X.pop("HeartDisease")
 
-x_train, x_test, y_train, y_test = train_test_split(X, y)
+#x_train, x_test, y_train, y_test = train_test_split(X, y)
 
-run = Run.get_context()
+#run = Run.get_context()
 
 def main():
     # add arguments to script
