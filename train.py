@@ -81,7 +81,7 @@ def read_data():
         dataset = dataset.register(workspace = ws,
                                    name = data_name,
                                    description = description_text)
-        return dataset
+    return dataset
 
 ##ds = read_data()
 #df = ds.to_pandas_dataframe()
