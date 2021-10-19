@@ -25,7 +25,7 @@ def prepare_data(df):
 
     '''
     df['Sex'] = df.Sex.apply(lambda s: 1 if s=='M' else 0)
-    df['ExerciseAngina'] = df.ExerciseAngina.apply(lambda s: 1 if s=='Y' else 0)
+    df['ExerciseAngina'] = df.ExerciseAngina.apply(lambda s: 1 if s is True else 0)
     
     one_hot_cols = ["ChestPainType", "RestingECG"]
     for col in one_hot_cols:
