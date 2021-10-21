@@ -6,6 +6,7 @@
 
 ## Project Set Up and Installation
 *OPTIONAL:* If your project has any special installation steps, this is where you should put it. To turn this project into a professional portfolio project, you are encouraged to explain how to set up this project in AzureML.
+
 This project consists of two jupyter notebooks `automl.ipynb` and `hyperprameter_training.ipynb`, one python file `train.py` containing function to clean and read in the data, as well as the training algorithm for the model to be used in the HyperDrive experiment and the folder `data\` containing the dataset in .csv format.
 In order to run both notebooks, the whole project folder, including the subfolder data has to be uploaded into the Azure Machine Learning Studio Notebook section.
 
@@ -15,6 +16,7 @@ In order to run both notebooks, the whole project folder, including the subfolde
 
 ### Overview
 *TODO*: Explain about the data you are using and where you got it from.
+
 The dataset I'm using for this project is the Heart Failure Prediction Dataset from kaggle.
 
 fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [2021-10-18] from https://www.kaggle.com/fedesoriano/heart-failure-prediction.
@@ -68,6 +70,37 @@ Some categorical features have to be preprocessed before they can be handled by 
 
 ## Automated ML
 *TODO*: Give an overview of the `automl` settings and configuration you used for this experiment
+
+For the AutoML run I'm setting up a cluster with a vm size of `Standard_DS12_V2`, a maximum of 6 nodes and a minimum of 1 node.
+```
+compute_config = AmlCompute.provisioning_configuration(vm_size='Standard_DS12_v2',
+                                                          max_nodes=6, min_nodes=1)
+compute_target = ComputeTarget.create(workspace=ws, name="expcluster", provisioning_configuration=compute_config)
+```
+
+The training task `classification` is run on the uploaded and cleaned dataset (see [section Dataset](#dataset)) with the target column `HeartDisease` on the above created cluster. I turned the featurization off, since I cleaned the data before registering the dataset. Die Ergebnisse the AutoML runs werden im Ordner `automl_run` abgelegt.
+
+```
+automl_config = AutoMLConfig(compute_target=compute_target,
+                             task="classification",
+                             training_data=dataset,
+                             label_column_name="HeartDisease",
+                             path = './automl_run',
+                             featurization = "off",
+                             **automl_settings
+                            )
+```
+Die Einstellungen für das AutoML Experiment sind
+
+```
+automl_settings = {
+    "experiment_timeout_minutes": 20,
+    "max_concurrent_iterations": 5,
+    "primary_metric": 'accuracy',
+    "n_cross_validations": 5,
+    "enable_early_stopping": True,
+}
+```
 
 ### Results
 *TODO*: What are the results you got with your automated ML model? What were the parameters of the model? How could you have improved it?
