@@ -105,6 +105,12 @@ I'm using a 5-fold crossvalidation, since the dataset is very small and with cro
 ### Results
 *TODO*: What are the results you got with your automated ML model? What were the parameters of the model? How could you have improved it?
 
+In the AutoML run tree based learning algorithms performed really well, especially the gradient boosted models XGBoostClassifiers and LightGBM. The worst performing models were based on Nearest-Neighbors-type algorithms (KNN, SVM). Most of the columns in my training data are binary, with only five features being numerical. 
+
+KNN and SVM need a distance metric to work. AutoML chose the manhattan metric for the distance, which works good on standard normal and standard uniform distributions (--> numeric features) . But in this dataset the features will probably behave more like a Bernoulli distribution, where this metric simply fails, resulting in the low accuracy of these models.
+
+On the other hand, many binary features mean that the distinction between leaves is easy for the algorithm. And with the balanced dataset, the resulting tree-models won't suffer much bias.
+
 *TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
 
 ## Hyperparameter Tuning
