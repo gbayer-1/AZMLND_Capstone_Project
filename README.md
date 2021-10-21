@@ -62,15 +62,13 @@ dataset = Dataset.Tabular.register_pandas_dataframe(df, datastore, show_progress
 ```
 
 ### PreProcessing
-The preprocessing of the data is defined in the prepare_data function in the train.py script.
+The preprocessing of the data is defined in the `prepare_data` function in the train.py script.
 Some categorical features have to be preprocessed before they can be handled by the machine learning models.
 - The columns Sex and ExerciseAngina are binary coded, with 1 for "male"/"yes" and 0 for "female"/"no" respectively.
 - The column ST_Slope is numerically encoded with 1 for "Up", 0 for "Flat" and -1 for "Down".
 - The columns for the ChestPainType and RestingECG features are one_hot encoded for the model.
 
 ## Automated ML
-*TODO*: Give an overview of the `automl` settings and configuration you used for this experiment
-
 For the AutoML run I'm setting up a cluster with a vm size of `Standard_DS12_V2`, a maximum of 6 nodes and a minimum of 1 node.
 ```
 compute_config = AmlCompute.provisioning_configuration(vm_size='Standard_DS12_v2',
@@ -78,7 +76,7 @@ compute_config = AmlCompute.provisioning_configuration(vm_size='Standard_DS12_v2
 compute_target = ComputeTarget.create(workspace=ws, name="expcluster", provisioning_configuration=compute_config)
 ```
 
-The training task `classification` is run on the uploaded and cleaned dataset (see [section Dataset](#dataset)) with the target column `HeartDisease` on the above created cluster. I turned the featurization off, since I cleaned the data before registering the dataset. Die Ergebnisse the AutoML runs werden im Ordner `automl_run` abgelegt.
+The training task `classification` is run on the uploaded and cleaned dataset (see [section Dataset](#dataset)) with the target column `HeartDisease` on the above created cluster. I turned the featurization off, since I cleaned the data before registering the dataset. The results of the AutoML run are saved in the folder `./automl_run`.
 
 ```
 automl_config = AutoMLConfig(compute_target=compute_target,
@@ -90,7 +88,7 @@ automl_config = AutoMLConfig(compute_target=compute_target,
                              **automl_settings
                             )
 ```
-Die Einstellungen für das AutoML Experiment sind
+The settings for the AutoML run are configured like this
 
 ```
 automl_settings = {
@@ -101,6 +99,8 @@ automl_settings = {
     "enable_early_stopping": True,
 }
 ```
+I chose the 20 min experiment time out, to ensure a completed run before the provided virtual machine times out. The AutoML run will use up to 5 cores in parallel (`max_concurrent_iterations`). I also enabled the early stopping policy, which will stop a run if there is no improvement after 31 iterations. The primary metric to evaluate the best model I chose `accuracy`. This is the most straightforward metric to judge a classification task. Since the target values are quite balanced in the dataset I don't expect much problems with the precision of the resulting model. Nevertheless, while evaluating the results of this run, I'm going to pay close attention to the confusion matrix and precison scores as well.
+I'm using a 5-fold crossvalidation, since the dataset is very small and with crossvalidation the whole dataset is used to train the model. 
 
 ### Results
 *TODO*: What are the results you got with your automated ML model? What were the parameters of the model? How could you have improved it?
