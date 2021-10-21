@@ -6,6 +6,10 @@
 
 ## Project Set Up and Installation
 *OPTIONAL:* If your project has any special installation steps, this is where you should put it. To turn this project into a professional portfolio project, you are encouraged to explain how to set up this project in AzureML.
+This project consists of two jupyter notebooks `automl.ipynb` and `hyperprameter_training.ipynb`, one python file `train.py` containing function to clean and read in the data, as well as the training algorithm for the model to be used in the HyperDrive experiment and the folder `data\` containing the dataset in .csv format.
+In order to run both notebooks, the whole project folder, including the subfolder data has to be uploaded into the Azure Machine Learning Studio Notebook section.
+
+*TODO*: Make screenshot of the upload
 
 ## Dataset
 
@@ -39,8 +43,21 @@ The features in this dataset are:
   - ST-slope of te peak exercise in three categories (Up, flat and down)
 
 ### Access
-*TODO*: Explain how you are accessing the data in your workspace.
-Since I'm using the same dataset for an AutoML run and a HyperDrive Experiment, I defined the access to the data in the train.py script, so it can be used in both notebooks.
+Since I'm using the same dataset for an AutoML run and a HyperDrive Experiment, I defined the access to the data in the function `read_data` in the train.py script, so it can be used in both notebooks.
+
+To be used in the Azure Machine Learning Studio the data has to be uploaded and registered in the Workspace. The dataset will be available by the name "heart_disease_data". First the function `read_data()` checks, whether a dataset of this name is already registered in the workspace `ws` with `ws.datasets["heart_diseases_data"]`. If it is found, then the function will reuse this dataset.
+
+If the dataset is not found, the function first accesses the default datastore of the workspace, and uploads the contents of the data folder into a folder named "data" in the datastore
+```
+datastore = ws.get_default_datastore()
+datastore.upload('./data', overwrite=True, target_path='data')
+```
+Then a Tabular Dataset is created using `from_delimited_files()`. I could already register this dataset, but I want to use my own preprocessing algorithm to clean the data, therefore I call the function `prepare_data()` (see [section PreProcessing](#preprocessing)).
+The output of this function is a cleaned and ready to use pandas dataframe. I register this dataframe as TabularData in my workspace with the name "heart_disease_data".
+```
+dataset = Dataset.Tabular.register_pandas_dataframe(df, datastore, show_progress=True,
+                             name="heart_disease_data", description=description_text)
+```
 
 ### PreProcessing
 The preprocessing of the data is defined in the prepare_data function in the train.py script.
