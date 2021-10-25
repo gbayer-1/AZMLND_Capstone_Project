@@ -7,7 +7,7 @@ Created on Tue Oct 19 10:35:42 2021
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
 from azureml.core.run import Run
 from azureml.core import Dataset
 import argparse
@@ -37,12 +37,6 @@ def prepare_data(df):
     df["ST_Slope"] = df.ST_Slope.map(ST_Slope)
     return df
 
-def test_func():
-    ws = Workspace.from_config()
-    default_datastore = ws.get_default_datastore()
-    default_datastore.upload('./data')
-
-# TODO change data read in
 def read_data():
     '''
     This function uploads the local file heart.csv into the default datastore
@@ -82,28 +76,29 @@ def read_data():
                              name=data_name, description=description_text)
     return dataset
 
-##ds = read_data()
-#df = ds.to_pandas_dataframe()
-#X = prepare_data(df)
-#y = X.pop("HeartDisease")
+X = read_data()
+y = X.pop("HeartDisease")
 
-#x_train, x_test, y_train, y_test = train_test_split(X, y)
+x_train, x_test, y_train, y_test = train_test_split(X, y)
 
-#run = Run.get_context()
+run = Run.get_context()
 
 def main():
     # add arguments to script
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--C', type=float, default=1.0, help="Inverse of regularization strength. Smaller values cause stronger regularization")
-    parser.add_argument('--max_iter', type=int, default=100, help="Maximum number of iterations to converge")
-
+    parser.add_argument('--n_estimators', type=int, default=100, help="The number of trees in the forest.")
+    parser.add_argument('--max_depth', type=int, default=None, help="The maximum depth of the tree")
+    parser.add_argument('--min_samples_split', type=int, default=2, help="The minimum number of samples required to split an internal node")
     args = parser.parse_args()
 
-    run.log("Regularization Strength:", np.float(args.C))
-    run.log("Max iterations:", np.int(args.max_iter))
+    run.log("No. of trees:", np.float(args.n_estimators))
+    run.log("Max depth:", np.int(args.max_depth))
+    run.log("Min samples split:", np.int(args.min_samples_split))
     
-    model = LogisticRegression(C=args.C, max_iter=args.max_iter).fit(x_train, y_train)
+    model = RandomForestClassifier(n_estimators=n_estimators,
+                                   max_depth=max_depth,
+                                   min_samples_split=min_samples_split).fit(x_train, y_train)
     
     accuracy = model.score(x_test, y_test)
     run.log("Accuracy", np.float(accuracy))
