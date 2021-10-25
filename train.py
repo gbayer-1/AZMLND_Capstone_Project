@@ -96,9 +96,9 @@ def main():
     run.log("Max depth:", np.int(args.max_depth))
     run.log("Min samples split:", np.int(args.min_samples_split))
     
-    model = RandomForestClassifier(n_estimators=n_estimators,
-                                   max_depth=max_depth,
-                                   min_samples_split=min_samples_split).fit(x_train, y_train)
+    model = RandomForestClassifier(n_estimators=args.n_estimators,
+                                   max_depth=args.max_depth,
+                                   min_samples_split=args.min_samples_split).fit(x_train, y_train)
     
     accuracy = model.score(x_test, y_test)
     run.log("Accuracy", np.float(accuracy))
