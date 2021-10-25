@@ -4,3 +4,4 @@ dependencies:
 - pip:
   - azureml-defaults
   - pandas
+  - skl2onnx
