@@ -15,6 +15,8 @@ import numpy as np
 from azureml.core import Workspace
 #import os
 
+run = Run.get_context()
+
 def prepare_data(df):
     '''
     Some categorical features have to be preprocessed before they can be handled by the machine learning models.
@@ -49,7 +51,7 @@ def read_data():
 
     '''
     
-    ws = Workspace.from_config()
+    ws = run.experiment.workspace
     data_name = "heart_disease_data"
     description_text = "heart_failure_prediction_dataset from kaggle"
     
@@ -76,13 +78,6 @@ def read_data():
                              name=data_name, description=description_text)
     return dataset
 
-X = read_data()
-y = X.pop("HeartDisease")
-
-x_train, x_test, y_train, y_test = train_test_split(X, y)
-
-run = Run.get_context()
-
 def main():
     # add arguments to script
     parser = argparse.ArgumentParser()
@@ -92,9 +87,17 @@ def main():
     parser.add_argument('--min_samples_split', type=int, default=2, help="The minimum number of samples required to split an internal node")
     args = parser.parse_args()
 
+    X = read_data().to_pandas_dataframe()
+    y = X.pop("HeartDisease")
+
+    x_train, x_test, y_train, y_test = train_test_split(X, y)
+
+    
+
     run.log("No. of trees:", np.float(args.n_estimators))
     run.log("Max depth:", np.int(args.max_depth))
     run.log("Min samples split:", np.int(args.min_samples_split))
+
     
     model = RandomForestClassifier(n_estimators=args.n_estimators,
                                    max_depth=args.max_depth,
