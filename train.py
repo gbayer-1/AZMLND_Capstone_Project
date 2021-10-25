@@ -13,7 +13,9 @@ from azureml.core import Dataset
 import argparse
 import numpy as np
 from azureml.core import Workspace
-#import os
+from skl2onnx import convert_sklearn
+from skl2onnx.common.data_types import FloatTensorType
+import os
 
 run = Run.get_context()
 
@@ -105,6 +107,12 @@ def main():
     
     accuracy = model.score(x_test, y_test)
     run.log("Accuracy", np.float(accuracy))
+
+    initial_type = [('X', FloatTensorType([None, x_train.shape[1]]))]
+    onnx = convert_sklearn(model, initial_types=initial_type)
+    os.makedirs('outputs', exist_ok=True)
+    with open('outputs/hyperdrive_model.onnx', "wb") as f:
+        f.write(onnx.SerializeToString())
 
 if __name__ == '__main__':
     main()
