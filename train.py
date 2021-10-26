@@ -8,11 +8,12 @@ Created on Tue Oct 19 10:35:42 2021
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import f1_score, confusion_matrix, precision_score
 from azureml.core.run import Run
 from azureml.core import Dataset
 import argparse
 import numpy as np
-from azureml.core import Workspace
+import pickle
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
 import os
@@ -106,11 +107,28 @@ def main():
                                    min_samples_split=args.min_samples_split).fit(x_train, y_train)
     
     accuracy = model.score(x_test, y_test)
+    y_pred = model.predict(x_test)
+    # log model metrics 
     run.log("Accuracy", np.float(accuracy))
+    run.log("F1 Score", np.float(f1_score(y_test, y_pred)))
+    run.log("precision", np.float(precision_score(y_test, y_pred)))
+    
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    cmtx = {
+        "schema_type": "confusion_matrix",
+        "data": {"class_labels": ["0", "1"],
+                 "matrix": [[int(y) for y in x] for x in conf_matrix]}}
+    run.log_confusion_matrix("confusion matrix", cmtx)
+    
+    # save model als pickle
+    os.makedirs('outputs', exist_ok=True)
+    with open("outputs/model.pkl", "wb") as f:
+        pickle.dump(model, f)
 
+    # save model as onnx
     initial_type = [('X', FloatTensorType([None, x_train.shape[1]]))]
     onnx = convert_sklearn(model, initial_types=initial_type)
-    os.makedirs('outputs', exist_ok=True)
+    
     with open('outputs/hyperdrive_model.onnx', "wb") as f:
         f.write(onnx.SerializeToString())
 
