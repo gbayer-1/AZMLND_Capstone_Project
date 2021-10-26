@@ -40,20 +40,20 @@ input_sample = pd.DataFrame({"Age": pd.Series([0], dtype="int64"),
                              "RestingECG_ST": pd.Series([0], dtype="int64")})
 output_sample = np.array([0])
 method_sample = StandardPythonParameterType("predict")
-@input_schema('method', method_sample, convert_to_provided_type=False)
-@input_schema('data', PandasParameterType(input_sample))
+@input_schema("method", method_sample, convert_to_provided_type=False)
+@input_schema("data", PandasParameterType(input_sample), convert_to_provided_type=False)
 @output_schema(NumpyParameterType(output_sample))
 
-
 def preprocess(input_data_json):
-    dummy_df = pd.DataFrame(json.loads(input_data_json)['data'])
+    dat = json.loads(input_data_json)['data']
+    dummy_df = pd.DataFrame(json.loads(dat))
     return np.array(dummy_df.astype(np.float32))
 
-def run(data):
+def run(input_data):
     try:
-        data = preprocess(data)
-        result = session.run([output_name], {input_name: data})
-        json.dumps({"result": result.tolist()})
+        dat = preprocess(input_data)
+        result = session.run([output_name], {input_name: dat})
+        return json.dumps({"result": result[0].tolist()})
     except Exception as e:
         result = str(e)
         return json.dumps({"error": result})
