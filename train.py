@@ -17,8 +17,13 @@ import pickle
 from skl2onnx import convert_sklearn
 from skl2onnx.common.data_types import FloatTensorType
 import os
+from azureml.core import Workspace
 
 run = Run.get_context()
+if hasattr(run, 'experiment'):
+    ws = run.experiment.workspace
+else:
+    ws = Workspace.from_config()   
 
 def prepare_data(df):
     '''
@@ -54,7 +59,6 @@ def read_data():
 
     '''
     
-    ws = run.experiment.workspace
     data_name = "heart_disease_data"
     description_text = "heart_failure_prediction_dataset from kaggle"
     
@@ -116,6 +120,7 @@ def main():
     conf_matrix = confusion_matrix(y_test, y_pred)
     cmtx = {
         "schema_type": "confusion_matrix",
+        "schema_version": "1.0.0",
         "data": {"class_labels": ["0", "1"],
                  "matrix": [[int(y) for y in x] for x in conf_matrix]}}
     run.log_confusion_matrix("confusion matrix", cmtx)
