@@ -38,23 +38,19 @@ input_sample = pd.DataFrame({"Age": pd.Series([0], dtype="int64"),
                              "RestingECG_LVH": pd.Series([0], dtype="int64"),
                              "RestingECG_Normal": pd.Series([0], dtype="int64"),
                              "RestingECG_ST": pd.Series([0], dtype="int64")})
-input_sample = np.array(input_sample.astype(np.float32))
+
 output_sample = np.array([0])
 method_sample = StandardPythonParameterType("predict")
 
-sample_input = StandardPythonParameterType({"data": PandasParameterType(input_sample), "method": method_sample})
+sample_input = StandardPythonParameterType([PandasParameterType(input_sample)])
 @input_schema("Inputs", sample_input)
 @output_schema(StandardPythonParameterType({"Results": NumpyParameterType(output_sample)}))
 
-
-def preprocess(data):
-    return np.array(data.astype(np.float32))
-
 def run(Inputs):
     try:
-        data = preprocess(Inputs["data"])
+        data = np.array(Inputs[0].astype(np.float32))
         result = session.run([output_name], {input_name: data})
-        return result[0]
+        return result[0].tolist()
     except Exception as e:
         result = str(e)
         return json.dumps({"error": result})

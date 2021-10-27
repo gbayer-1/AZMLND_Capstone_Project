@@ -15,7 +15,7 @@ dependencies:
   # Currently Azure ML only supports 3.5.2 and later.
 
 - python=3.6.2
-- inference_schema=1.3.0
+
 
 - pip:
   - numpy
