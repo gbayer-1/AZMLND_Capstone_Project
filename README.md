@@ -1,7 +1,13 @@
 # Machine Learning Engineer with Microsoft Azure Capstone Project: <br> :heart: Predicting Heart Failure :broken_heart:
 
-In this project I want to train a machine learning model to help doctors diagnose patients with heart diseases while using only a small set of diagnostic data.
-For this I'm using the free heart-failure-prediction dataset from [kaggle.com](http://www.kaggle.com/) (see section [Dataset](#dataset)). I'm using two approaches to train a model: On the one hand I use the automated machine learning feature from Azure called AutoML (see section [Automated ML](#automated-ml)), which trains many different model types on the dataset. On the other hand I use the AzureML HyperDrive package to automatically tune hyperparameters of a RandomForestClassifier model (see section [Hyperparameter Tuning](#hyperparameter-tuning)). I then deploy the best model to a WebService and interact with it (see section [Model Deployment](#model-deployment)). Additionally I'm giving a short excursion on how to convert the model into the `onnx` framework and on how to monitor the deployed endpoint using logging (see section [Standout Suggestions](#standout-suggestions)).
+> Cardiovascular diseases (CVDs) are the leading cause of death globally.
+> An estimated 17.9 million people died from CVDs in 2019, representing 32% of all global deaths. Of these deaths, 85% were due to heart attack and stroke.
+> It is important to detect cardiovascular disease as early as possible so that management with counselling and medicines can begin.
+> <br> [WHO fact sheet on cardiovascular diseases](https://www.who.int/en/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds))
+
+Due to the large impact of CVD I am using this capstone project to train a machine learning model to help doctors diagnose patients with CVD. This should be achieved, while using only a small set of diagnostic data, which can be easily obtained by a medical professional. Early detection and treatment of a CVD is highly favorable for the survival of the patients.
+
+To tackle this task, I'm using the free heart-failure-prediction dataset from [kaggle.com](http://www.kaggle.com/) (see section [Dataset](#dataset)). I'm using two approaches to train a model: On the one hand I use the automated machine learning feature from Azure called AutoML (see section [Automated ML](#automated-ml)), which trains many different model types on the dataset. On the other hand I use the AzureML HyperDrive package to automatically tune hyperparameters of a RandomForestClassifier model (see section [Hyperparameter Tuning](#hyperparameter-tuning)). I then deploy the best model to a WebService and interact with it (see section [Model Deployment](#model-deployment)). Additionally I'm giving a short excursion on how to convert the model into the ONNX-framework and on how to monitor the deployed endpoint using logging (see section [Standout Suggestions](#standout-suggestions)).
 
 ## Project Set Up and Installation
 <img src="./screenshots/screenshots_firsttry/Screenshot 2021-10-25 130458_upload_folder.png" width=300 align="left"/>
@@ -17,14 +23,13 @@ Please make sure to adjust the `subscription_id`,`ressource_group` and `workspac
 ## Dataset
 
 ### Overview
-*TODO*: Explain about the data you are using and where you got it from.
-
 The dataset I'm using for this project is the Heart Failure Prediction Dataset from kaggle.
 
 fedesoriano. (September 2021). Heart Failure Prediction Dataset. Retrieved [2021-10-18] from https://www.kaggle.com/fedesoriano/heart-failure-prediction.
 
+I chose this dataset, since it is a quite comprehensive and balanced dataset, with features that are mostly comprehensible for non-professionals too.
+
 ### Task
-*TODO*: Explain the task you are going to be solving with this dataset and the features you will be using for it.
 
 The task with this dataset is to predict whether a person will develop a heart disease with a set of 11 diagnostic features.
 This dataset is a combination of five independent heart disease datasets containing 918 observations of patients. The target column "Heart Disease" is nearly balanced in this dataset with 510 patients with and 408 patients without cardiovascular diseases.
@@ -39,12 +44,14 @@ The features in this dataset are:
 - medical history
   - type of chest pain the patient is experiencing in four categories (TA: typical angina, ATA: atypical angina, NAP: non-anginal pain, ASY: asymptomatic)
 - ECG and cardiac stress testing
+  [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/SinusRhythmLabels.svg/608px-SinusRhythmLabels.svg.png" width=200 align="right">](https://en.wikipedia.org/wiki/File:SinusRhythmLabels.svg#filelinks)
+
   - resting blood pressure [mm Hg]
   - resting ECG results in three categories (Normal,  ST: ST-T wave abnormality, LVH : left ventricular hypertrophy)
-  - oldpeak: the depression between S and T peak
+  - oldpeak: the depression between S and T peak in the ECG
   - maximum heartrate under cardiac stress
   - exercise-induced angina
-  - ST-slope of te peak exercise in three categories (Up, flat and down)
+  - ST-slope in the ECG of the peak exercise in three categories (up, flat and down) 
 
 ### Access
 Since I'm using the same dataset for an AutoML run and a HyperDrive Experiment, I defined the access to the data in the function `read_data` in the train.py script, so it can be used in both notebooks.
