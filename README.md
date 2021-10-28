@@ -54,7 +54,7 @@ The features in this dataset are:
   - ST-slope in the ECG of the peak exercise in three categories (up, flat and down) 
 
 ### Access
-Since I'm using the same dataset for an AutoML run and a HyperDrive Experiment, I defined the access to the data in the function `read_data` in the train.py script, so it can be used in both notebooks.
+Since I'm using the same dataset for an AutoML run and a HyperDrive Experiment, I defined the access to the data in the function `read_data()` in the [train.py](train.py) script, so it can be used in both notebooks.
 
 To be used in the Azure Machine Learning Studio the data has to be uploaded and registered in the Workspace. The dataset will be available by the name "heart_disease_data". First the function `read_data()` checks, whether a dataset of this name is already registered in the workspace `ws` with `ws.datasets["heart_diseases_data"]`. If it is found, then the function will reuse this dataset.
 
@@ -64,28 +64,21 @@ datastore = ws.get_default_datastore()
 datastore.upload('./data', overwrite=True, target_path='data')
 ```
 Then a Tabular Dataset is created using `from_delimited_files()`. I could already register this dataset, but I want to use my own preprocessing algorithm to clean the data, therefore I call the function `prepare_data()` (see [section PreProcessing](#preprocessing)).
-The output of this function is a cleaned and ready to use pandas dataframe. I register this dataframe as TabularData in my workspace with the name "heart_disease_data".
+The output of this function is a cleaned and ready to use pandas dataframe. I register this dataframe as `TabularData` in my workspace with the name "heart_disease_data".
 ```
 dataset = Dataset.Tabular.register_pandas_dataframe(df, datastore, show_progress=True,
                              name="heart_disease_data", description=description_text)
 ```
 
 ### PreProcessing
-The preprocessing of the data is defined in the `prepare_data` function in the train.py script.
+The preprocessing of the data is defined in the `prepare_data` function in the [train.py](train.py) script.
 Some categorical features have to be preprocessed before they can be handled by the machine learning models.
 - The columns Sex and ExerciseAngina are binary coded, with 1 for "male"/"yes" and 0 for "female"/"no" respectively.
 - The column ST_Slope is numerically encoded with 1 for "Up", 0 for "Flat" and -1 for "Down".
 - The columns for the ChestPainType and RestingECG features are one_hot encoded for the model.
 
 ## Automated ML
-For the AutoML run I'm setting up a cluster with a vm size of `Standard_DS12_V2`, a maximum of 6 nodes and a minimum of 1 node.
-```
-compute_config = AmlCompute.provisioning_configuration(vm_size='Standard_DS12_v2',
-                                                          max_nodes=6, min_nodes=1)
-compute_target = ComputeTarget.create(workspace=ws, name="expcluster", provisioning_configuration=compute_config)
-```
-
-The training task `classification` is run on the uploaded and cleaned dataset (see [section Dataset](#dataset)) with the target column `HeartDisease` on the above created cluster. I turned the featurization off, since I cleaned the data before registering the dataset. The results of the AutoML run are saved in the folder `./automl_run`.
+The training task `classification` is run on the uploaded and cleaned dataset with the target column `HeartDisease`. I turned the featurization off, since I cleaned the data before registering the dataset. The results of the AutoML run are saved in the folder `./automl_run`. I enabled the export of the model to the ONNX-Framework with `enable_onnx_compatible_models`.
 
 ```
 automl_config = AutoMLConfig(compute_target=compute_target,
@@ -94,6 +87,7 @@ automl_config = AutoMLConfig(compute_target=compute_target,
                              label_column_name="HeartDisease",
                              path = './automl_run',
                              featurization = "off",
+                             enable_onnx_compatible_models=True,
                              **automl_settings
                             )
 ```
