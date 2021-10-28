@@ -115,12 +115,6 @@ def main():
     run.log("Max depth:", np.int(args.max_depth))
     run.log("Min samples split:", np.int(args.min_samples_split))
 
-    # log the feature importance for this model
-    feature_importance = model.feature_importances_
-    feature_list = model.feature_names_in_
-    for index in range(len(feature_importance)):
-        run.log_row("feature importance", name=feature_list[index], importance=feature_importance[index])
-
     # log model metrics
     accuracy = model.score(x_test, y_test)
     y_pred = model.predict(x_test)
