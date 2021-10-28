@@ -16,12 +16,17 @@ from inference_schema.parameter_types.pandas_parameter_type import PandasParamet
 from inference_schema.parameter_types.standard_py_parameter_type import StandardPythonParameterType
 
 def init():
+    '''
+    init function is called to load the model.
+    I invoke a onnxruntime.Inferencesession
+    '''
     global session, input_name, output_name
     model = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'hyperdrive_model.onnx')
     session = onnxruntime.InferenceSession(model, None)
     input_name = session.get_inputs()[0].name
     output_name = session.get_outputs()[0].name
-    
+
+# define sample input and output to be used to create a swagger file.
 input_sample = pd.DataFrame({"Age": pd.Series([0], dtype="int64"),
                              "Sex": pd.Series([0], dtype="int64"),
                              "RestingBP": pd.Series([0], dtype="int64"),
@@ -38,16 +43,19 @@ input_sample = pd.DataFrame({"Age": pd.Series([0], dtype="int64"),
                              "RestingECG_LVH": pd.Series([0], dtype="int64"),
                              "RestingECG_Normal": pd.Series([0], dtype="int64"),
                              "RestingECG_ST": pd.Series([0], dtype="int64")})
-
 output_sample = np.array([0])
-method_sample = StandardPythonParameterType("predict")
 
 sample_input = StandardPythonParameterType([PandasParameterType(input_sample)])
 @input_schema("Inputs", sample_input)
 @output_schema(StandardPythonParameterType({"Results": NumpyParameterType(output_sample)}))
 
 def run(Inputs):
+    '''
+    run function is used to run the model.
+    the input is processed to be fed to the model and the result is returned.
+    '''
     try:
+        # reshape the pandas dataframe to the FloatTensorType Input the Onnx models expects.
         data = np.array(Inputs[0].astype(np.float32))
         result = session.run([output_name], {input_name: data})
         return result[0].tolist()

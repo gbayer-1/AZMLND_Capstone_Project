@@ -3,6 +3,8 @@
 Created on Tue Oct 26 09:44:11 2021
 
 @author: GABRIFR
+
+write the environment yml for the deployment of the onnx model
 """
 
 from azureml.core.conda_dependencies import CondaDependencies
