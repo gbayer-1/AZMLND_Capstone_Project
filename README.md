@@ -1,4 +1,4 @@
-# Machine Learning Engineer with Microsoft Azure: Capstone Project: <br> :heart: Predicting Heart Failure :broken_heart:
+# Machine Learning Engineer with Microsoft Azure Capstone Project: <br> :heart: Predicting Heart Failure :broken_heart:
 
 In this project I want to train a machine learning model to help doctors diagnose patients with heart diseases while using only a small set of diagnostic data.
 For this I'm using the free heart-failure-prediction dataset from [kaggle.com](http://www.kaggle.com/) (see section [Dataset](#dataset)). I'm using two approaches to train a model: On the one hand I use the automated machine learning feature from Azure called AutoML (see section [Automated ML](#automated-ml)), which trains many different model types on the dataset. On the other hand I use the AzureML HyperDrive package to automatically tune hyperparameters of a RandomForestClassifier model (see section [Hyperparameter Tuning](#hyperparameter-tuning)). I then deploy the best model to a WebService and interact with it (see section [Model Deployment](#model-deployment)). Additionally I'm giving a short excursion on how to convert the model into the `onnx` framework and on how to monitor the deployed endpoint using logging (see section [Standout Suggestions](#standout-suggestions)).
@@ -6,10 +6,11 @@ For this I'm using the free heart-failure-prediction dataset from [kaggle.com](h
 ## Project Set Up and Installation
 <img src="./screenshots/screenshots_firsttry/Screenshot 2021-10-25 130458_upload_folder.png" width=300 align="left"/>
 <img src="./screenshots/notebook_section.png" width=200 align="right" />
-This project consists of two jupyter notebooks `automl.ipynb` and `hyperprameter_training.ipynb`, one python file `train.py` containing function to clean and read in the data, as well as the training algorithm for the model to be used in the HyperDrive experiment and the folder `data\` containing the dataset in .csv format.
+
+This project consists of two jupyter notebooks [automl.ipynb](automl.ipynb) and [hyperparameter_training.ipynb](hyperparameter_training.ipynb), one python file [train.py](train.py) containing functions to clean and read in the data, as well as the training algorithm for the model to be used in the HyperDrive experiment and the folder [data/](data/) containing the dataset in .csv format.
 In order to run both notebooks, the whole project folder, including the subfolder data has to be uploaded into the Azure Machine Learning Studio Notebook section.
 
-The notebook section should look like this -->
+The notebook section should look like this ➡️
 
 Please make sure to adjust the `subscription_id`,`ressource_group` and `workspace_name` in the [config.json](./config.json) according to your subscription
 
