@@ -3,7 +3,7 @@
 > Cardiovascular diseases (CVDs) are the leading cause of death globally.
 > An estimated 17.9 million people died from CVDs in 2019, representing 32% of all global deaths. Of these deaths, 85% were due to heart attack and stroke.
 > It is important to detect cardiovascular disease as early as possible so that management with counselling and medicines can begin.
-> <br> [WHO fact sheet on cardiovascular diseases](https://www.who.int/en/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds) Retrieved: 2021-10-28)
+> <br> [WHO fact sheet on cardiovascular diseases](https://www.who.int/en/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds)) Retrieved: 2021-10-28
 
 Due to the large impact of CVD I am using this capstone project to train a machine learning model to help doctors diagnose patients with CVD. This should be achieved, while using only a small set of diagnostic data, which can be easily obtained by a medical professional. Early detection and treatment of a CVD is highly favorable for the survival of the patients.
 
