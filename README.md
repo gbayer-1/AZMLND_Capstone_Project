@@ -114,8 +114,29 @@ I deployed the model in the ONNX-Framework using the `onnxruntime.InferenceSessi
 
 After finishing my screencast, I deployed the AutoML model as well, this time using the saved `pkl` file. You can find a detailed description of this deployment in the [automl.ipynb](automl.ipynb) notebook.
 
-I provided an example on how to query the endpoint in both notebooks. Please note that due to the differences in deployment (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework)) the query for both endpoints differs slightly. The endpoint with the HyperDrive model expects a json with the key `Inputs`, the AutoML endpoint expects a json with the keys `data` and `method`. Since this could be quite confusing, I provided for both endpoints a swagger documention of the API, that can found in the `swagger\` folder in the respective model folders. In both notebooks you can find a screenshot of the SwaggerUI for the respective endpoint.
+I provided an example on how to query the endpoint in both notebooks. 
+<br>
+To query the endpoint, a customer needs the scoring uri and a key for authentification. both can be fetched from the WebService object
+```
+uri = service.scoring_uri
+key, _ = service.get_keys()`
+```
+<img src="./screenshots/endpoint_geturiandkey.png" width=600 align="right"/>
+or from the endpoints section in the Azure Machine Learning Studio.
 
+Please note that due to the differences in deployment (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework)) the query for both endpoints differs slightly. The endpoint with the HyperDrive model expects a json with the key `Inputs`, the AutoML endpoint expects a json with the keys `data` and `method`. Since this could be quite confusing, I provided for both endpoints a swagger documention of the API, that can found in the `swagger\` folder in the respective model folders. In both notebooks you can find a screenshot of the SwaggerUI for the respective endpoint.
+<br>
+For the Hyperdrivemodel an example data input looks like this:
+```
+body = {'Inputs': [[{'Age': 40, 'Sex': 1, 'RestingBP': 140, 'Cholesterol': 289, 'FastingBS': 0, 'MaxHR': 172, 'ExerciseAngina': 0, 'Oldpeak': 0.0, 'ST_Slope': 1, 'ChestPainType_ASY': 0, 'ChestPainType_ATA': 1, 'ChestPainType_NAP': 0, 'ChestPainType_TA': 0, 'RestingECG_LVH': 0, 'RestingECG_Normal': 1, 'RestingECG_ST': 0}]]}
+```
+To finally query the REST-endpoint using an http request, one needs to define the header and provide the authentification in it. Then one can use the POST method to get a repsonse from the endpoint
+```
+headers = {"Content-Type": "application/json"}
+headers["Authorization"] = f"Bearer {key}"
+response = requests.post(uri, data=json.dumps(body), headers=headers)
+print(response.json())
+```
 ## Screen Recording
 A screencast of the deployed hyperdrive model can be found here: https://youtu.be/t1e8SQdtGYY
 
