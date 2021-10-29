@@ -118,7 +118,7 @@ uri = service.scoring_uri
 key, _ = service.get_keys()`
 ```
 <img src="./screenshots/endpoint_geturiandkey.png" width=600 align="right"/>
-or from the endpoints section in the Azure Machine Learning Studio.
+or from the endpoints section in the Azure Machine Learning Studio. :arrow_right:
 
 Please note that due to the differences in deployment (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework)) the query for both endpoints differs slightly. The endpoint with the HyperDrive model expects a json with the key `Inputs`, the AutoML endpoint expects a json with the keys `data` and `method`. Since this could be quite confusing, I provided for both endpoints a swagger documention of the API, that can found in the `swagger\` folder in the respective model folders. In both notebooks you can find a screenshot of the SwaggerUI for the respective endpoint.
 <br>
