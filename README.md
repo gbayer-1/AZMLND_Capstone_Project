@@ -43,7 +43,7 @@ The features in this dataset are:
   - fasting blood sugar level; a boolean value if the blood sugar is elevated (>120mg/dl) or not, which is an indicator for diabetes
 - medical history
   - type of chest pain the patient is experiencing in four categories (TA: typical angina, ATA: atypical angina, NAP: non-anginal pain, ASY: asymptomatic)
-- ECG and cardiac stress testing <br> For reference I provided a picture of a normal heart rythm in an ECG from [wikipedia](https://en.wikipedia.org/wiki/File:SinusRhythmLabels.svg#filelinks) ➡️
+- ECG and cardiac stress testing <br> For reference I linked a picture of a normal heart rythm in an ECG from [wikipedia](https://en.wikipedia.org/wiki/File:SinusRhythmLabels.svg#filelinks) ➡️
   [<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/SinusRhythmLabels.svg/608px-SinusRhythmLabels.svg.png" width=200 align="right">](https://en.wikipedia.org/wiki/File:SinusRhythmLabels.svg#filelinks)
 
   - resting blood pressure [mm Hg]
