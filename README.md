@@ -109,13 +109,10 @@ I deployed the model in the ONNX-Framework using the `onnxruntime.InferenceSessi
 
 After finishing my screencast, I deployed the AutoML model as well, this time using the saved `pkl` file. You can find a detailed description of this deployment in the [automl.ipynb](automl.ipynb) notebook.
 
-I provided an example on how to query the endpoint in both notebooks. Please note that due to the differences in deployment (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework) the query for both endpoints is slightly different. The endpoint with the HyperDrive model expects a json with the key `Inputs`, the AutoML endpoint expects a json with the keys `data` and `method`. Since this could be quite confusing, I provided for both endpoints a swagger documention of the API, that can found in the `swagger\` folder in the respective model folders. In both notebooks you can find a screenshot of the SwaggerUI for the respective endpoint.
+I provided an example on how to query the endpoint in both notebooks. Please note that due to the differences in deployment (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework)) the query for both endpoints differs slightly. The endpoint with the HyperDrive model expects a json with the key `Inputs`, the AutoML endpoint expects a json with the keys `data` and `method`. Since this could be quite confusing, I provided for both endpoints a swagger documention of the API, that can found in the `swagger\` folder in the respective model folders. In both notebooks you can find a screenshot of the SwaggerUI for the respective endpoint.
 
 ## Screen Recording
-*TODO* Provide a link to a screen recording of the project in action. Remember that the screencast should demonstrate:
-- A working model
-- Demo of the deployed  model
-- Demo of a sample request sent to the endpoint and its response
+A screencast of the deployed hyperdrive model can be found here: https://youtu.be/t1e8SQdtGYY
 
 ## Standout Suggestions
 ### Converting the Models into ONNX-Framework
