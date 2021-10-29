@@ -87,8 +87,6 @@ The best model of the AutoML run is a VotingEnsemble containing the tree-based-m
 
 <img src="./screenshots/AutoML_runwidget.png" />
 
-A description on further improvements can also be found in the [notebook](automl.ipynb).
-
 ## Hyperparameter Tuning
 For a detailed description of the hyperdrive configuration please refer to the incode documentation in [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb). <br>
 I chose a RandomForestClassifier model for this problem, since the input data is a mix of categorical und numerical data on which tree-based models tend to perform well. The HyperDrive Run tunes three parameters of this model on the primary metric accuracy: 
@@ -103,8 +101,6 @@ You can find an overview and discussion about the models trained by the Hyperpar
 The best RandomForestClassifier model of this run consists of 1416 trees with a maximum depth of 100 and at least 2 samples inside one leaf. It has an accuracy of `0.922` and a precision of `0.896`.
 
 <img src="./screenshots/hyperdrive_rundetails_1.png" />
-
-A description on further improvements can also be found in the [notebook](hyperparameter_tuning.ipynb).
 
 ## Model Deployment
 <img src="./screenshots/hyperdrive_model_endpointhealthy.png" align="right" width=600/>
