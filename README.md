@@ -108,7 +108,8 @@ I deployed the best model from the Hyperparameter tuning, since it had a better 
 I deployed the model in the ONNX-Framework using the `onnxruntime.InferenceSession` class. You can find detailed description of the deployment process in the incode documentation in the [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb) notebook.
 
 After finishing my screencast, I deployed the AutoML model as well, this time using the saved `pkl` file. You can find a detailed description of this deployment in the [automl.ipynb](automl.ipynb) notebook.
-*TODO*: Give an overview of the deployed model and instructions on how to query the endpoint with a sample input.
+
+I provided an example on how to query the endpoint in both notebooks. Please note that due to the differences in deployment (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework) the query for both endpoints is slightly different. The endpoint with the HyperDrive model expects a json with the key `Inputs`, the AutoML endpoint expects a json with the keys `data` and `method`. Since this could be quite confusing, I provided for both endpoints a swagger documention of the API, that can found in the `swagger\` folder in the respective model folders. In both notebooks you can find a screenshot of the SwaggerUI for the respective endpoint.
 
 ## Screen Recording
 *TODO* Provide a link to a screen recording of the project in action. Remember that the screencast should demonstrate:
@@ -158,4 +159,5 @@ I enabled the logging for my deployed Azure Container Instances by enabling AppI
 ```
 enable_app_insights=True
 ```
-The logs of the Webservice can be retrieved by calling the function `get_logs()` from the WebService object.
+The logs of the Webservice can be retrieved by calling the function `get_logs()` from the WebService object, or you can use the graphical user interface of the azure application.
+<img src="./screenshots/appinsights_webservice.png" />
