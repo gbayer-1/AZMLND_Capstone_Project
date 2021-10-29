@@ -105,12 +105,24 @@ The best RandomForestClassifier model of this run consists of 1416 trees with a 
 ## Model Deployment
 <img src="./screenshots/hyperdrive_model_endpointhealthy.png" align="right" width=600/>
 
-I deployed the best model from the Hyperparameter tuning, since it had a better accuracy than the Voting Ensemble from the AutoML run.
-I deployed the model in the ONNX-Framework using the `onnxruntime.InferenceSession` class. You can find detailed description of the deployment process in the incode documentation in the [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb) notebook as well as in the section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework).
+I deployed the best model from the Hyperparameter tuning, since it had a better accuracy than the Voting Ensemble from the AutoML run. I deployed the model in the ONNX-Framework using the `onnxruntime.InferenceSession` class.
+You can find detailed description of the deployment process in the incode documentation in the [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb) notebook. 
+<br> 
+To deploy the model, I need to configure the WebService on which my model should run. For this I use an Azure Container Instance with 1CPU, where I enabled the authentification (key-based in this case) and the Application Insights for logging (see section [Enable Logging for the deployed WebApp](#enable-logging-for-the-deployed-webapp)).
+```
+aci_config = AciWebservice.deploy_configuration(cpu_cores=1, memory_gb=1, enable_app_insights=True, auth_enabled=True)
+```
+The service also needs an inference configuration. In this configuration I provide a scoring script, which describes how to communicate with the model and an environment, that lists all the necessary packages to run the model. You can find a detailed description of the scoring script in the section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework).
+```
+env = Environment.from_conda_specification(name="hyperdrive_env", file_path='./hyperdrive_model/hyperdrive_env.yml')
+inference_config = InferenceConfig(entry_script='hyperdrive_model/score_onnx_model_version2.py',
+                                   environment=env)
+```
 
 After finishing my screencast, I deployed the AutoML model as well, this time using the saved `pkl` file. You can find a detailed description of this deployment in the [automl.ipynb](automl.ipynb) notebook.
 
-I provided an example on how to query the endpoint in both notebooks. 
+### Consume the endpoint
+I provided an example on how to query the respective endpoint in both notebooks. 
 <br>
 To query the endpoint, a customer needs the scoring uri and a key for authentification. both can be fetched from the WebService object
 ```
@@ -120,7 +132,7 @@ key, _ = service.get_keys()`
 <img src="./screenshots/endpoint_geturiandkey.png" width=600 align="right"/>
 or from the endpoints section in the Azure Machine Learning Studio. :arrow_right:
 
-Please note that due to the differences in deployment (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework)) the query for both endpoints differs slightly. The endpoint with the HyperDrive model expects a json with the key `Inputs`, the AutoML endpoint expects a json with the keys `data` and `method`. Since this could be quite confusing, I provided for both endpoints a swagger documention of the API, that can found in the `swagger\` folder in the respective model folders. In both notebooks you can find a screenshot of the SwaggerUI for the respective endpoint.
+Please note that due to the differences in deployment (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework)) the query for both endpoints differs slightly. The endpoint with the HyperDrive model expects a json with the key `Inputs`, the AutoML endpoint expects a json with the keys `data` and `method`. Since this could be quite confusing, I provided for both endpoints a swagger documention of the API, that can found in the `swagger\` folder in the respective model folders. In both notebooks you can find a screenshot of the SwaggerUI for the respective endpoint. You can find an example input for both endpoints there as well.
 <br>
 For the Hyperdrivemodel an example data input looks like this:
 ```
