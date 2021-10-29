@@ -91,7 +91,12 @@ A description on further improvements can also be found in the [notebook](automl
 
 ## Hyperparameter Tuning
 For a detailed description of the hyperdrive configuration please refer to the incode documentation in [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb). <br>
-I chose a RandomForestClassifier model for this problem, since the input data is a mix of categorical und numerical data on which tree-based models tend to perform well. The HyperDrive Run tunes three parameters of this model on the primary metric accuracy: the number of trees in the forest, the maximum depth of a tree and the minimum number of samples required to split a node in the tree. The model training is defined in [train.py](train.py). Please note, that I log more than the primary metric of this model for each run. I convert the trained models into ONNX-Framework as well (see section [Standout Suggestions](#standout-suggestions)). 
+I chose a RandomForestClassifier model for this problem, since the input data is a mix of categorical und numerical data on which tree-based models tend to perform well. The HyperDrive Run tunes three parameters of this model on the primary metric accuracy: 
+- the number of trees in the forest: here the tuning algorithm will use random integers up to 10000. A too small number of trees mean, that some observations might not be predicted by any of the trees in the forest.
+- the maximum depth of a tree: the depth of the trees will be chosen from [10,100,1000,5000]. A deeper tree, meaning more splits and more leafs.
+- the minimum number of samples required to split a node in the tree: this will be a random integer up to 50. The lower the number, the deeper a tree can get.
+
+The model training is defined in [train.py](train.py). Please note, that I log more than the primary metric of this model for each run. I convert the trained models into ONNX-Framework as well (see section [Standout Suggestions](#standout-suggestions)). 
 
 ### Results
 You can find an overview and discussion about the models trained by the Hyperparameter tuning and a detailed description of the best model of this run in [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb). <br>
