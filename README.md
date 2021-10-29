@@ -105,7 +105,7 @@ A description on further improvements can also be found in the [notebook](hyperp
 <img src="./screenshots/hyperdrive_model_endpointhealthy.png" align="right" width=600/>
 
 I deployed the best model from the Hyperparameter tuning, since it had a better accuracy than the Voting Ensemble from the AutoML run.
-I deployed the model in the ONNX-Framework using the `onnxruntime.InferenceSession` class. You can find detailed description of the deployment process in the incode documentation in the [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb) notebook.
+I deployed the model in the ONNX-Framework using the `onnxruntime.InferenceSession` class. You can find detailed description of the deployment process in the incode documentation in the [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb) notebook as well as in the section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework).
 
 After finishing my screencast, I deployed the AutoML model as well, this time using the saved `pkl` file. You can find a detailed description of this deployment in the [automl.ipynb](automl.ipynb) notebook.
 
@@ -122,7 +122,7 @@ enable_onnx_compatible_models=True
 ```
 After the run finished, a `model.onnx` is saved next to the `model.pkl` in the `outputs\` folder and can be downloaded.
 
-For the models in the HyperDrive run I chose to use the `skl2onnx` package and directly convert the sklearn model during the run. I defined the conversion in the [train.py](train.py) script line 140ff. First I have to convert the input into the model to a datatype the ONNX-Framework can handle. This is important to remember, when deploying the model (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework). I then save the model in the folder `outputs` with the name `hyperdrive_model.onnx` for each run.
+For the models in the HyperDrive run I chose to use the `skl2onnx` package and directly convert the sklearn model during the run. I defined the conversion in the [train.py](train.py) script line 140ff. First I have to convert the input into the model to a datatype the ONNX-Framework can handle. This is important to remember, when deploying the model (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework)). I then save the model in the folder `outputs` with the name `hyperdrive_model.onnx` for each run.
 ```
 initial_type = [('X', FloatTensorType([None, x_train.shape[1]]))]
 onnx = convert_sklearn(model, initial_types=initial_type)
