@@ -95,7 +95,7 @@ I chose a RandomForestClassifier model for this problem, since the input data is
 
 ### Results
 You can find an overview and discussion about the models trained by the Hyperparameter tuning and a detailed description of the best model of this run in [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb). <br>
-The best RandomForestClassifier model of this run consists of 1416 trees with a maximum depth of 100 and at least 2 samples inside one leaf. It has an accuracy of $0.922$ and a precision of $0.896$.
+The best RandomForestClassifier model of this run consists of 1416 trees with a maximum depth of 100 and at least 2 samples inside one leaf. It has an accuracy of `0.922` and a precision of `0.896`.
 
 <img src="./screenshots/hyperdrive_rundetails_1.png" />
 
