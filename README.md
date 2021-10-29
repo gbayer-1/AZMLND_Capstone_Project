@@ -102,6 +102,12 @@ The best RandomForestClassifier model of this run consists of 1416 trees with a 
 A description on further improvements can also be found in the [notebook](hyperparameter_tuning.ipynb).
 
 ## Model Deployment
+<img src="./screenshots/hyperdrive_model_endpointhealthy.png" align="right" width=600/>
+
+I deployed the best model from the Hyperparameter tuning, since it had a better accuracy than the Voting Ensemble from the AutoML run.
+I deployed the model in the ONNX-Framework using the `onnxruntime.InferenceSession` class. You can find detailed description of the deployment process in the incode documentation in the [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb) notebook.
+
+After finishing my screencast, I deployed the AutoML model as well, this time using the saved `pkl` file. You can find a detailed description of this deployment in the [automl.ipynb](automl.ipynb) notebook.
 *TODO*: Give an overview of the deployed model and instructions on how to query the endpoint with a sample input.
 
 ## Screen Recording
