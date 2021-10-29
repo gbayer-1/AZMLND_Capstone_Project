@@ -3,7 +3,7 @@
 > Cardiovascular diseases (CVDs) are the leading cause of death globally.
 > An estimated 17.9 million people died from CVDs in 2019, representing 32% of all global deaths. Of these deaths, 85% were due to heart attack and stroke.
 > It is important to detect cardiovascular disease as early as possible so that management with counselling and medicines can begin.
-> <br> [WHO fact sheet on cardiovascular diseases](https://www.who.int/en/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds))
+> <br> [WHO fact sheet on cardiovascular diseases](https://www.who.int/en/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds) Retrieved: 2021-10-28)
 
 Due to the large impact of CVD I am using this capstone project to train a machine learning model to help doctors diagnose patients with CVD. This should be achieved, while using only a small set of diagnostic data, which can be easily obtained by a medical professional. Early detection and treatment of a CVD is highly favorable for the survival of the patients.
 
@@ -78,45 +78,20 @@ Some categorical features have to be preprocessed before they can be handled by 
 - The columns for the ChestPainType and RestingECG features are one_hot encoded for the model.
 
 ## Automated ML
-The training task `classification` is run on the uploaded and cleaned dataset with the target column `HeartDisease`. I turned the featurization off, since I cleaned the data before registering the dataset. The results of the AutoML run are saved in the folder `./automl_run`. I enabled the export of the model to the ONNX-Framework with `enable_onnx_compatible_models`.
-
-```
-automl_config = AutoMLConfig(compute_target=compute_target,
-                             task="classification",
-                             training_data=dataset,
-                             label_column_name="HeartDisease",
-                             path = './automl_run',
-                             featurization = "off",
-                             enable_onnx_compatible_models=True,
-                             **automl_settings
-                            )
-```
-The settings for the AutoML run are configured like this
-
-```
-automl_settings = {
-    "experiment_timeout_minutes": 20,
-    "max_concurrent_iterations": 5,
-    "primary_metric": 'accuracy',
-    "n_cross_validations": 5,
-    "enable_early_stopping": True,
-}
-```
-I chose the 20 min experiment time out, to ensure a completed run before the provided virtual machine times out. The AutoML run will use up to 5 cores in parallel (`max_concurrent_iterations`). I also enabled the early stopping policy, which will stop a run if there is no improvement after 31 iterations. The primary metric to evaluate the best model I chose `accuracy`. This is the most straightforward metric to judge a classification task. Since the target values are quite balanced in the dataset I don't expect much problems with the precision of the resulting model. Nevertheless, while evaluating the results of this run, I'm going to pay close attention to the confusion matrix and precison scores as well.
-I'm using a 5-fold crossvalidation, since the dataset is very small and with crossvalidation the whole dataset is used to train the model. 
+For a detailed description of the AutoML configuration please refer to the incode documentation in [automl.ipynb](automl.ipynb).<br>
+I'm running a classification task on the dataset without featurization using a 5-fold crossvalidation and the primary metric accuracy.
 
 ### Results
-*TODO*: What are the results you got with your automated ML model? What were the parameters of the model? How could you have improved it?
+You can find an overview and discussion about the models trained by the AutoML run and a detailed description of the best model of this run in [automl.ipynb](automl.ipynb).<br>
+The best model of the AutoML run is a VotingEnsemble containing the tree-based-models XGBoostClassifier and LightGBM. It has an accuracy of `0.889` and a precision of `0.892`.
 
-In the AutoML run tree based learning algorithms performed really well, especially the gradient boosted models XGBoostClassifiers and LightGBM. The worst performing models were based on Nearest-Neighbors-type algorithms (KNN, SVM). Most of the columns in my training data are binary, with only five features being numerical. 
+<img src="./screenshots/AutoML_runwidget.png" />
 
-KNN and SVM need a distance metric to work. AutoML chose the manhattan metric for the distance, which works good on standard normal and standard uniform distributions (--> numeric features) . But in this dataset the features will probably behave more like a Bernoulli distribution, where this metric simply fails, resulting in the low accuracy of these models.
-
-On the other hand, many binary features mean that the distinction between leaves is easy for the algorithm. And with the balanced dataset, the resulting tree-models won't suffer much bias.
-
-*TODO* Remeber to provide screenshots of the `RunDetails` widget as well as a screenshot of the best model trained with it's parameters.
+A description on further improvements can also be found in the [notebook](automl.ipynb).
 
 ## Hyperparameter Tuning
+For a detailed description of the hyperdrive configuration please refer to the incode documentation in [hyperparameter_tuning.ipynb](hyperparameter_tuning.ipynb).
+
 *TODO*: What kind of model did you choose for this experiment and why? Give an overview of the types of parameters and their ranges used for the hyperparameter search
 
 
