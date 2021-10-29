@@ -117,4 +117,45 @@ After finishing my screencast, I deployed the AutoML model as well, this time us
 - Demo of a sample request sent to the endpoint and its response
 
 ## Standout Suggestions
-*TODO (Optional):* This is where you can provide information about any standout suggestions that you have attempted.
+### Converting the Models into ONNX-Framework
+The conversion of the model into ONNX-Framework is straightforward when using the AutoML feature of Azure. You simply enable the onnx compatible models in the AutoMLConfig with 
+```
+enable_onnx_compatible_models=True
+```
+After the run finished, a `model.onnx` is saved next to the `model.pkl` in the `outputs\` folder and can be downloaded.
+
+For the models in the HyperDrive run I chose to use the `skl2onnx` package and directly convert the sklearn model during the run. I defined the conversion in the [train.py](train.py) script line 140ff. First I have to convert the input into the model to a datatype the ONNX-Framework can handle. This is important to remember, when deploying the model (see section [Deploying Models in ONNX-Framework](#deploying-models-in-onnx-framework). I then save the model in the folder `outputs` with the name `hyperdrive_model.onnx` for each run.
+```
+initial_type = [('X', FloatTensorType([None, x_train.shape[1]]))]
+onnx = convert_sklearn(model, initial_types=initial_type)
+with open('outputs/hyperdrive_model.onnx', "wb") as f:
+       f.write(onnx.SerializeToString())
+```
+### Deploying Models in ONNX-Framework
+Deploying a model from the AutoML is straightforward (see [automl.ipynb](automl.ipynb)), since a [scoring script](automl_model/scoring_file_v_1_0_0.py) and an [environment definition](/automl_model/conda_env_v_1_0_0.yml) for the model is created during the run that can be used for deployment. But for the ONNX-model from the HyperDrive run I had to provide the scoring script [score_onnx_model_version2.py](hyperdrive_model/score_onnx_model_version2.py) and the [environment script](hyperdrive_model/hyperdrive_env.yml) myself.
+#### Scoring script for the ONNX-Framework
+The scoring script needs an `init()` funtion to load the model into the WebService. In the `init()` function I load the saved ONNX-model and invoke an `onnxruntime.InferenceSession`.
+```
+model = os.path.join(os.getenv('AZUREML_MODEL_DIR'), 'hyperdrive_model.onnx')
+session = onnxruntime.InferenceSession(model, None)
+```
+For an automated generation of a swagger file, I have to use the decorator functions `input_schema` and `output_schema` of the `inference_schema` package. I provided a pandas Dataframe of the same shape as my training data as an input sample. I tried to use an input_schema similar to the AutoML model with an `{"data": [], "method": str}` input. But
+according to the [documentation](https://docs.microsoft.com/en-us/azure/machine-learning/how-to-deploy-advanced-entry-script#automatically-generate-a-swagger-schema) the automated swagger generation only handles an input schema with the main key `Inputs` and a `StandardPythonParameterType`. With this configuration I finally manged to create the [swagger.json](hyperdrive_model/swagger/swagger.json) for this WebService.
+```
+sample_input = StandardPythonParameterType([PandasParameterType(input_sample)])
+@input_schema("Inputs", sample_input)
+@output_schema(StandardPythonParameterType({"Results": NumpyParameterType(np.array([0]))}))
+```
+The other required function of the scoring script is the `run()` function, which feeds the input of the WebService into the model and returns the models output. Please note, that I am reshaping the Input to an numpy array, since I have to use an Input datatype the ONNX-Framework can handle.
+```
+data = np.array(Inputs[0].astype(np.float32))
+result = session.run([output_name], {input_name: data})
+return result[0].tolist()
+```
+
+### Enable Logging for the deployed WebApp
+I enabled the logging for my deployed Azure Container Instances by enabling AppInsights in the AciWebservice deploy configuration:
+```
+enable_app_insights=True
+```
+The logs of the Webservice can be retrieved by calling the function `get_logs()` from the WebService object.
