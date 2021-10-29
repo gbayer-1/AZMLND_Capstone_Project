@@ -158,3 +158,11 @@ enable_app_insights=True
 ```
 The logs of the Webservice can be retrieved by calling the function `get_logs()` from the WebService object, or you can use the graphical user interface of the azure application.
 <img src="./screenshots/appinsights_webservice.png" />
+
+## Future work
+For future work one should pay close attention to teh dataset, since it might suffer from sample bias towards the sex of the patient. Only 20% of the samples are from women and from those only a quarter suffers from CVD, whereas nearly two thirds of the male patients have a CVD. But since the study of CVDs and their symptoms have historically been focused on male patients, and women present very different symptoms, they are often misdiagnosed. Women before menopause have a lower probability to develop a CVD than men of the same age, but after menopause this might not be true ([Gender differences in cardiovascular disease](https://www.health.harvard.edu/blog/gender-differences-in-cardiovascular-disease-women-are-less-likely-to-be-prescribed-certain-heart-medications-2020071620553)). The model should be monitored on its gender bias and if necessary the dataset needs to be adjusted remedy this bias.
+
+Since the input data is a mix of numerical and categorical data, standard SVM and Logistic Regression models do not have a good performance for this type of problems. 
+For future improvement of the AutoML setup one can try using a different distance metric for the KNN models. To save time in the AutoML run one can blacklist models, which are known to perform badly on this type of problems.
+
+In hindsight of the the HyperDrive run, the choices for the maximum depth parameter are not good. Most of the decision trees can be quite shallow (around 15 to 20) due to the binary nature of most features. So the `max_depth` parameter in most runs is pointless. Since the maximum depth also correlates to the minimum samples in a split, this parameter can be stripped for future work. I split my dataset for the hyperparameter tuning into train and test data to fit the model. Since the dataset is quite small, cross-validation may be a better choice and should be considered for future runs.
